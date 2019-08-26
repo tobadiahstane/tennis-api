@@ -38,6 +38,7 @@ public class GameEngineTest {
 	    GameUpdated updatedGame = engine.awardPoint(newGame, playerOneId);
 	    isGameUpdated(updatedGame);
 	    hasCorrectGameAndPlayerIds(updatedGame, gameId, playerOneId, playerTwoId);
+	    ;Assert.assertEquals(playerOneId, updatedGame.winningId);
 	}
 
 	@Test
@@ -58,8 +59,8 @@ public class GameEngineTest {
 	    GameUpdated updatedGame = engine.awardPoint(newGame, playerOneId);
 	    Assert.assertEquals(1, updatedGame.playerOnePoints);
 	    Assert.assertEquals(0, updatedGame.playerTwoPoints);
-	    Assert.assertEquals(0, updatedGame.winnerId);
-	    Assert.assertFalse(updatedGame.didPlayerWin);
+	    Assert.assertEquals(1, updatedGame.winningId);
+	    Assert.assertFalse(updatedGame.playerWon);
 	}
 	
 	@Test
@@ -70,8 +71,8 @@ public class GameEngineTest {
 	    GameUpdated updatedGame = engine.awardPoint(newGame, playerTwoId);
 	    Assert.assertEquals(0, updatedGame.playerOnePoints);
 	    Assert.assertEquals(1, updatedGame.playerTwoPoints);
-	    Assert.assertEquals(0, updatedGame.winnerId);
-	    Assert.assertFalse(updatedGame.didPlayerWin);
+	    Assert.assertEquals(2, updatedGame.winningId);
+	    Assert.assertFalse(updatedGame.playerWon);
 	}
 	
 	@Test
@@ -82,8 +83,8 @@ public class GameEngineTest {
 	    GameUpdated  updatedGame = (awardNumberOfPoints(engine, newGame, playerOneId, 2));
 	    Assert.assertEquals(2, updatedGame.playerOnePoints);
 	    Assert.assertEquals(0, updatedGame.playerTwoPoints);
-	    Assert.assertEquals(0, updatedGame.winnerId);
-	    Assert.assertFalse(updatedGame.didPlayerWin);
+	    Assert.assertEquals(1, updatedGame.winningId);
+	    Assert.assertFalse(updatedGame.playerWon);
 	}
 	
 	@Test
@@ -94,8 +95,8 @@ public class GameEngineTest {
 	    GameUpdated  updatedGame = (awardNumberOfPoints(engine, newGame, playerTwoId, 2));
 	    Assert.assertEquals(0, updatedGame.playerOnePoints);
 	    Assert.assertEquals(2, updatedGame.playerTwoPoints);
-	    Assert.assertEquals(0, updatedGame.winnerId);
-	    Assert.assertFalse(updatedGame.didPlayerWin);
+	    Assert.assertEquals(2, updatedGame.winningId);
+	    Assert.assertFalse(updatedGame.playerWon);
 	}
 	
 	@Test
@@ -106,8 +107,8 @@ public class GameEngineTest {
 	    GameUpdated  updatedGame = (awardNumberOfPoints(engine, newGame, playerOneId, 4));
 	    Assert.assertEquals(4, updatedGame.playerOnePoints);
 	    Assert.assertEquals(0, updatedGame.playerTwoPoints);
-	    Assert.assertEquals(playerOneId, updatedGame.winnerId);
-	    Assert.assertTrue(updatedGame.didPlayerWin);
+	    Assert.assertEquals(playerOneId, updatedGame.winningId);
+	    Assert.assertTrue(updatedGame.playerWon);
 	}
 	
 	@Test
@@ -118,12 +119,13 @@ public class GameEngineTest {
 	    GameUpdated  updatedGame = (awardNumberOfPoints(engine, newGame, playerTwoId, 4));
 	    Assert.assertEquals(0, updatedGame.playerOnePoints);
 	    Assert.assertEquals(4, updatedGame.playerTwoPoints);
-	    Assert.assertEquals(playerTwoId, updatedGame.winnerId);
-	    Assert.assertTrue(updatedGame.didPlayerWin);
+	    Assert.assertEquals(playerTwoId, updatedGame.winningId);
+	    Assert.assertTrue(updatedGame.playerWon);
+	    Assert.assertFalse(updatedGame.playerAdvantage);
 	}
 	
 	@Test
-	public void playerOneWithFourPointsNotAheadByTwoNotWins() {
+	public void playerOneWithFourPointsNotAheadByTwoNotWinsTest() {
 		int gameId = 1, playerOneId = 1, playerTwoId = 2;
 	    Games.IHandleGames engine = new GameEngine();
 	    GameUpdated newGame = engine.createGame(gameId, playerOneId, playerTwoId);
@@ -131,11 +133,12 @@ public class GameEngineTest {
 	    GameUpdated updatedGame = awardNumberOfPoints(engine, playerTwoAhead, playerOneId, 4);
 	    Assert.assertEquals(4, updatedGame.playerOnePoints);
 	    Assert.assertEquals(3, updatedGame.playerTwoPoints);
-	    Assert.assertEquals(0, updatedGame.winnerId);
-	    Assert.assertFalse(updatedGame.didPlayerWin);
+	    Assert.assertEquals(1, updatedGame.winningId);
+	    Assert.assertFalse(updatedGame.playerWon);
+	    Assert.assertTrue(updatedGame.playerAdvantage);
 	}
 	@Test
-	public void playerTwoWithFourPointsNotAheadByTwoNotWins() {
+	public void playerTwoWithFourPointsNotAheadByTwoNotWinsTest() {
 		int gameId = 1, playerOneId = 1, playerTwoId = 2;
 	    Games.IHandleGames engine = new GameEngine();
 	    GameUpdated newGame = engine.createGame(gameId, playerOneId, playerTwoId);
@@ -143,12 +146,13 @@ public class GameEngineTest {
 	    GameUpdated updatedGame = awardNumberOfPoints(engine, playerOneAhead, playerTwoId, 4);
 	    Assert.assertEquals(3, updatedGame.playerOnePoints);
 	    Assert.assertEquals(4, updatedGame.playerTwoPoints);
-	    Assert.assertEquals(0, updatedGame.winnerId);
-	    Assert.assertFalse(updatedGame.didPlayerWin);
+	    Assert.assertEquals(2, updatedGame.winningId);
+	    Assert.assertFalse(updatedGame.playerWon);
+	    Assert.assertTrue(updatedGame.playerAdvantage);
 	}
 	
 	@Test
-	public void playerOneWithFivePointsAheadByTwoWins() {
+	public void playerOneWithFivePointsAheadByTwoWinsTest() {
 		int gameId = 1, playerOneId = 1, playerTwoId = 2;
 	    Games.IHandleGames engine = new GameEngine();
 	    GameUpdated newGame = engine.createGame(gameId, playerOneId, playerTwoId);
@@ -157,8 +161,35 @@ public class GameEngineTest {
 	    GameUpdated updatedGame = awardNumberOfPoints(engine, equalized, playerOneId, 2);
 	    Assert.assertEquals(5, updatedGame.playerOnePoints);
 	    Assert.assertEquals(3, updatedGame.playerTwoPoints);
-	    Assert.assertEquals(1, updatedGame.winnerId);
-	    Assert.assertTrue(updatedGame.didPlayerWin);
+	    Assert.assertEquals(1, updatedGame.winningId);
+	    Assert.assertTrue(updatedGame.playerWon);
+	}
+	
+	@Test
+	public void playerOneWithThreePointsIsAheadFirstTest() {
+		int gameId = 1, playerOneId = 1, playerTwoId = 2;
+	    Games.IHandleGames engine = new GameEngine();
+	    GameUpdated newGame = engine.createGame(gameId, playerOneId, playerTwoId);
+	    GameUpdated  playerOneAhead = awardNumberOfPoints(engine, newGame, playerOneId, 3);
+	    GameUpdated updatedGame = awardNumberOfPoints(engine, playerOneAhead, playerTwoId, 2);
+	    Assert.assertEquals(3, updatedGame.playerOnePoints);
+	    Assert.assertEquals(2, updatedGame.playerTwoPoints);
+	    Assert.assertEquals(1, updatedGame.winningId);
+	    Assert.assertFalse(updatedGame.playerWon);
+	}
+	
+	@Test
+	public void playersTiedAtThreePointsTest() {
+		int gameId = 1, playerOneId = 1, playerTwoId = 2;
+	    Games.IHandleGames engine = new GameEngine();
+	    GameUpdated newGame = engine.createGame(gameId, playerOneId, playerTwoId);
+	    GameUpdated  playerOneAhead = awardNumberOfPoints(engine, newGame, playerOneId, 3);
+	    GameUpdated updatedGame = awardNumberOfPoints(engine, playerOneAhead, playerTwoId, 3);
+	    Assert.assertEquals(3, updatedGame.playerOnePoints);
+	    Assert.assertEquals(3, updatedGame.playerTwoPoints);
+	    Assert.assertEquals(0, updatedGame.winningId);
+	    Assert.assertFalse(updatedGame.playerWon);
+	    Assert.assertFalse(updatedGame.playerAdvantage);
 	}
 	
 	private GameUpdated awardNumberOfPoints(Games.IHandleGames gameEngine ,GameUpdated game, int playerId, int pointsToAdd) {
@@ -183,8 +214,8 @@ public class GameEngineTest {
 	private void isNewGame(GameUpdated newGame) {
 		Assert.assertEquals(0,newGame.playerOnePoints);
 	    Assert.assertEquals(0,newGame.playerTwoPoints);
-	    Assert.assertEquals(0,newGame.winnerId);
-	    Assert.assertFalse(newGame.didPlayerWin);
+	    Assert.assertEquals(0,newGame.winningId);
+	    Assert.assertFalse(newGame.playerWon);
 		
 	}
 	
