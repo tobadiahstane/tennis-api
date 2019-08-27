@@ -81,5 +81,27 @@ public class InMemoryPersistenceTest {
 		Assert.assertEquals(2 ,secondPlayerId);
 	}
 	
+	@Test
+	public void StoringTwoPlayersTest() {
+		InMemoryPersistence testLog = new InMemoryPersistence();
+		int firstPlayerId = testLog.lookupNextPlayerId();
+		PlayerAdded playerOne = new PlayerAdded(firstPlayerId, "Venus Williams");
+		testLog.storePlayerAdded(playerOne);
+		int secondPlayerId = testLog.lookupNextPlayerId();
+		PlayerAdded playerTwo = new PlayerAdded(secondPlayerId, "Serena Williams");
+		testLog.storePlayerAdded(playerTwo);
+		String testPlayerName = testLog.lookupPlayerName(secondPlayerId);
+		Assert.assertEquals("Serena Williams", testPlayerName);
+	}
+	
+	@Test
+	public void callScoreReturnsLastGameUpdatedTest(){
+		InMemoryPersistence testLog = new InMemoryPersistence();
+		int firstId = testLog.lookupNextGameId();
+		GameUpdated testUpdated = new GameUpdated (firstId,1,2,0,0);
+		testLog.storeUpdate(testUpdated);
+		GameUpdated testLoaded = testLog.callScore(firstId);
+		Assert.assertEquals(testUpdated,testLoaded);
+	}
 	
 }

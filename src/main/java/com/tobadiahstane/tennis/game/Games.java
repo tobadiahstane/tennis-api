@@ -23,6 +23,7 @@ public interface Games {
 
 		public int lookupNextGameId();
 		
+		//TODO: public boolean isGame(int gameId);
 		
 	}
 	

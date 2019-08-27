@@ -45,7 +45,6 @@ public class GameEngine implements IHandleGames {
 	
 	private boolean somePlayerAdvantaged(int newPlayerPoints, int opponentPoints) {
 		
-		System.out.println(newPlayerPoints - opponentPoints);
 		return newPlayerPoints >= 4 && 1 == Math.abs(newPlayerPoints - opponentPoints)
 				|| 
 				opponentPoints >= 4 && 1 == Math.abs(newPlayerPoints - opponentPoints);

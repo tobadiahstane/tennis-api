@@ -25,15 +25,20 @@ public class InMemoryPersistence implements IPersistGames, IQueryGames, IPersist
 		this.games.add((update.gameId - 1), update );
 	}
 
+	//Load game and callScore seem like duplicated methods because of the simplicity of the in memory persistence. 
+	//If all GameUpdated events for a given game were stored as (de)queue, loadGame should be responsible for loading all events in the queue
+	
 	@Override
 	public GameUpdated loadGame(int gameId) {
 		return this.games.get(gameId- 1);
 	}
 
+	//while callScore would continue to return the last gameUpdated.
 	@Override
 	public GameUpdated callScore(int gameId) {
-		return null;
+		return this.games.get(gameId- 1);
 	}
+
 
 	@Override
 	public int lookupNextGameId() {
