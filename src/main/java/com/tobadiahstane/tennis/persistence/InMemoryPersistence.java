@@ -6,6 +6,7 @@ import java.util.List;
 import com.tobadiahstane.tennis.game.GameUpdated;
 import com.tobadiahstane.tennis.game.Games.IPersistGames;
 import com.tobadiahstane.tennis.game.Games.IQueryGames;
+import com.tobadiahstane.tennis.game.Score;
 import com.tobadiahstane.tennis.player.PlayerAdded;
 import com.tobadiahstane.tennis.player.Players.IPersistPlayers;
 import com.tobadiahstane.tennis.player.Players.IQueryPlayers;
@@ -35,8 +36,39 @@ public class InMemoryPersistence implements IPersistGames, IQueryGames, IPersist
 
 	//while callScore would continue to return the last gameUpdated.
 	@Override
-	public GameUpdated callScore(int gameId) {
-		return this.games.get(gameId- 1);
+	public Score callScore(int gameId) {
+		GameUpdated game = this.games.get(gameId- 1);
+		return new Score (gameId, calculateScore(game) , game.playerOneId, game.playerTwoId);
+	}
+	
+	private String calculateScore(GameUpdated game) {
+		String score;
+		int compareScores = Math.abs(game.playerOnePoints-game.playerTwoPoints);
+		if (game.playerWon) {
+			score = "Winner, " + this.lookupPlayerName(game.winningId);
+		}else if(game.playerAdvantage) {
+			score = "Advantage, " + this.lookupPlayerName(game.winningId);
+			
+		}else if(game.playerOnePoints >= 3 && compareScores == 0) {
+			score = "DEUCE!";
+		}else {
+		    score = convertPlayerPointsToScore(game.playerOnePoints) + "-" + convertPlayerPointsToScore(game.playerTwoPoints);
+		}
+		return score;
+	}
+	
+	private String convertPlayerPointsToScore(int playerScore) {
+		
+		switch(playerScore) {
+		case 0:
+			return "Love";
+		case 1:
+			return "15";
+		case 2:
+			return "30";
+		default:
+			return "40";
+		}
 	}
 
 

@@ -29,7 +29,7 @@ public class GameService implements Games {
 	}
 	
 	@Override
-	public GameUpdated callScore(int gameId){
+	public Score callScore(int gameId){
 		return gameQuery.callScore(gameId);
 	}
 	

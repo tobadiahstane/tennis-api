@@ -8,7 +8,7 @@ public interface Games {
 	
 	void nextScore(int gameId, int p1);
 
-	GameUpdated callScore(int gameId);
+	Score callScore(int gameId);
 
 	public interface IHandleGames {
 
@@ -19,7 +19,7 @@ public interface Games {
 	}
 	
 	public interface IQueryGames {
-		public GameUpdated callScore(int gameId);
+		public Score callScore(int gameId);
 
 		public int lookupNextGameId();
 		

@@ -4,7 +4,6 @@ package com.tobadiahstane.tennis.api;
 import org.junit.Test;
 import org.junit.Assert;
 
-import com.tobadiahstane.tennis.game.GameUpdated;
 import com.tobadiahstane.tennis.game.Games;
 import com.tobadiahstane.tennis.game.Score;
 public class GameControllerTest {
@@ -36,28 +35,27 @@ public class GameControllerTest {
 	
 	private class TestDoubleGames implements Games {
 		
-		private GameUpdated game;
+		private Score score;
 		
 		@Override
 		public void nextScore(int gameId, int player) {
-			this.game = player == 1?
-					new GameUpdated (game.gameId, game.playerOneId, game.playerTwoId, game.playerOnePoints+1, game.playerTwoPoints):
-	                new GameUpdated (game.gameId, game.playerOneId, game.playerTwoId, game.playerOnePoints, game.playerTwoPoints+1);
+			this.score = new Score (gameId, "15-Love", score.getPlayer1(), score.getPlayer2());
+	                
 			
 		}
 
 		@Override
 		public int startGame(int p1, int p2) {
 			// TODO Auto-generated method stub
-			this.game = new GameUpdated(1, p1, p2, 0, 0);
-			return game.gameId;
+			this.score = new Score(1, "Love-Love", p1, p2);
+			return score.getId();
 			
 		}
 
 		@Override
-		public GameUpdated callScore(int gameId) {
+		public Score callScore(int gameId) {
 			// TODO Auto-generated method stub
-			return this.game;
+			return this.score;
 		}
 
 		

@@ -16,7 +16,7 @@ public class GameServiceTest {
 		int initNextId = testLog.lookupNextGameId();
 		Games testGames = makeTestGameService(testLog);
 		int gameId = testGames.startGame(p1,p2);
-		var gameOneFirstUpdate =testGames.callScore(gameId);
+		var gameOneFirstUpdate = testLog.loadGame(gameId);
 		Assert.assertEquals(gameOneFirstUpdate.gameId, initNextId);
 		Assert.assertEquals(gameOneFirstUpdate.gameId, gameId);
 		
@@ -30,7 +30,7 @@ public class GameServiceTest {
 		Games testGames = makeTestGameService(testLog);
 		testGames.startGame(p1,p2);
 		int gameId = testGames.startGame(p3,p4);
-		var gameTwoFirstUpdate = testGames.callScore(gameId);
+		var gameTwoFirstUpdate = testLog.loadGame(gameId);
 		Assert.assertEquals(gameTwoFirstUpdate.gameId, initNextId+1);
 		
 	}
@@ -38,9 +38,10 @@ public class GameServiceTest {
 	@Test
 	public void startGameReturnsGameIdTest() {
 	int p1 = 1, p2 = 2;
-	Games testGames = makeTestGameService();
+	PersistenceTestDouble testLog = new PersistenceTestDouble();
+	Games testGames = makeTestGameService(testLog);
 	int gameId = testGames.startGame(p1,p2);
-	var gameOneFirstUpdate = testGames.callScore(gameId);
+	var gameOneFirstUpdate = testLog.loadGame(gameId);
 	Assert.assertEquals(gameOneFirstUpdate.gameId, gameId);
 	}
 	
@@ -71,10 +72,11 @@ public class GameServiceTest {
 	@Test
 	public void nextScoreAwardsPointsUsingTestGameEngineTest() {
 		int p1 = 1, p2 = 2;
-		Games gameService = makeTestGameService();
+		PersistenceTestDouble testLog = new PersistenceTestDouble();
+		Games gameService = makeTestGameService(testLog);
 		int gameId = gameService.startGame(p1, p2);
 		gameService.nextScore(gameId, p1);
-		GameUpdated secondUpdate = gameService.callScore(gameId);
+		GameUpdated secondUpdate = testLog.loadGame(gameId);
 		Assert.assertEquals(gameId, secondUpdate.gameId);
 		Assert.assertNotEquals(secondUpdate.playerTwoPoints, secondUpdate.playerOnePoints);
 	
@@ -83,10 +85,11 @@ public class GameServiceTest {
 	@Test
 	public void nextScoreStoresGameUpdated() {
 		int p1 = 1, p2 = 2;
-		var gameService = makeTestGameService();
+		PersistenceTestDouble testLog = new PersistenceTestDouble();
+		Games gameService = makeTestGameService(testLog);
 		int gameId =gameService.startGame(p1, p2);
 		gameService.nextScore(gameId, p1);
-		GameUpdated nextUpdate = gameService.callScore(gameId);
+		GameUpdated nextUpdate = testLog.loadGame(gameId);
 		Assert.assertEquals(nextUpdate.getClass(), GameUpdated.class);
 		Assert.assertNotEquals(nextUpdate.playerTwoPoints, nextUpdate.playerOnePoints);
 	}
@@ -99,10 +102,6 @@ public class GameServiceTest {
 		
 	}
 
-	private Games makeTestGameService() {
-		PersistenceTestDouble testLog = new PersistenceTestDouble();
-		return makeTestGameService(testLog);
-	}
 	
 	private Games makeTestGameService(PersistenceTestDouble testLog) {
 		GameEngineTestDouble testEng = new GameEngineTestDouble();
@@ -150,8 +149,8 @@ public class GameServiceTest {
 		}
 		
 		@Override
-		public GameUpdated callScore(int gameid) {
-			return lastStored;
+		public Score callScore(int gameId) {
+			return null;
 		}
 		
 		@Override

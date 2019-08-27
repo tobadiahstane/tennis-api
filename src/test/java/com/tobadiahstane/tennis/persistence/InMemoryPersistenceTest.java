@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.tobadiahstane.tennis.game.GameUpdated;
+import com.tobadiahstane.tennis.game.Score;
 import com.tobadiahstane.tennis.game.Games.IQueryGames;
 import com.tobadiahstane.tennis.player.PlayerAdded;
 
@@ -95,13 +96,165 @@ public class InMemoryPersistenceTest {
 	}
 	
 	@Test
-	public void callScoreReturnsLastGameUpdatedTest(){
+	public void CallScoreLoveLoveTest(){
 		InMemoryPersistence testLog = new InMemoryPersistence();
 		int firstId = testLog.lookupNextGameId();
 		GameUpdated testUpdated = new GameUpdated (firstId,1,2,0,0);
 		testLog.storeUpdate(testUpdated);
-		GameUpdated testLoaded = testLog.callScore(firstId);
-		Assert.assertEquals(testUpdated,testLoaded);
+		Score score  = testLog.callScore(firstId);
+		Assert.assertEquals(1,score.getId());
+		Assert.assertEquals("Love-Love", score.getScore());
+		Assert.assertEquals(1, score.getPlayer1());
+		Assert.assertEquals(2, score.getPlayer2());
 	}
 	
+	@Test
+	public void CallScore15LoveTest(){
+		InMemoryPersistence testLog = new InMemoryPersistence();
+		int firstId = testLog.lookupNextGameId();
+		GameUpdated testUpdated = new GameUpdated (firstId,1,2,1,0);
+		testLog.storeUpdate(testUpdated);
+		Score score  = testLog.callScore(firstId);
+		Assert.assertEquals(1,score.getId());
+		Assert.assertEquals("15-Love", score.getScore());
+		Assert.assertEquals(1, score.getPlayer1());
+		Assert.assertEquals(2, score.getPlayer2());
+	}
+	
+	@Test
+	public void CallScoreLove15Test(){
+		InMemoryPersistence testLog = new InMemoryPersistence();
+		int firstId = testLog.lookupNextGameId();
+		GameUpdated testUpdated = new GameUpdated (firstId,1,2,0,1);
+		testLog.storeUpdate(testUpdated);
+		Score score  = testLog.callScore(firstId);
+		Assert.assertEquals(1,score.getId());
+		Assert.assertEquals("Love-15", score.getScore());
+		Assert.assertEquals(1, score.getPlayer1());
+		Assert.assertEquals(2, score.getPlayer2());
+	}
+	
+	@Test
+	public void CallScore30LoveTest(){
+		InMemoryPersistence testLog = new InMemoryPersistence();
+		int firstId = testLog.lookupNextGameId();
+		GameUpdated testUpdated = new GameUpdated (firstId,1,2,2,0);
+		testLog.storeUpdate(testUpdated);
+		Score score  = testLog.callScore(firstId);
+		Assert.assertEquals(1,score.getId());
+		Assert.assertEquals("30-Love", score.getScore());
+		Assert.assertEquals(1, score.getPlayer1());
+		Assert.assertEquals(2, score.getPlayer2());
+	}
+	
+	@Test
+	public void CallScore40LoveTest(){
+		InMemoryPersistence testLog = new InMemoryPersistence();
+		int firstId = testLog.lookupNextGameId();
+		GameUpdated testUpdated = new GameUpdated (firstId,1,2,3,0);
+		testLog.storeUpdate(testUpdated);
+		Score score  = testLog.callScore(firstId);
+		Assert.assertEquals(1,score.getId());
+		Assert.assertEquals("40-Love", score.getScore());
+		Assert.assertEquals(1, score.getPlayer1());
+		Assert.assertEquals(2, score.getPlayer2());
+	}
+	
+	@Test
+	public void CallScore1515Test(){
+		InMemoryPersistence testLog = new InMemoryPersistence();
+		int firstId = testLog.lookupNextGameId();
+		GameUpdated testUpdated = new GameUpdated (firstId,1,2,1,1);
+		testLog.storeUpdate(testUpdated);
+		Score score  = testLog.callScore(firstId);
+		Assert.assertEquals(1,score.getId());
+		Assert.assertEquals("15-15", score.getScore());
+		Assert.assertEquals(1, score.getPlayer1());
+		Assert.assertEquals(2, score.getPlayer2());
+	}
+	
+	@Test
+	public void CallScore3015Test(){
+		InMemoryPersistence testLog = new InMemoryPersistence();
+		int firstId = testLog.lookupNextGameId();
+		GameUpdated testUpdated = new GameUpdated (firstId,1,2,2,1);
+		testLog.storeUpdate(testUpdated);
+		Score score  = testLog.callScore(firstId);
+		Assert.assertEquals(1,score.getId());
+		Assert.assertEquals("30-15", score.getScore());
+		Assert.assertEquals(1, score.getPlayer1());
+		Assert.assertEquals(2, score.getPlayer2());
+	}
+	
+	@Test
+	public void CallScore3030Test(){
+		InMemoryPersistence testLog = new InMemoryPersistence();
+		int firstId = testLog.lookupNextGameId();
+		GameUpdated testUpdated = new GameUpdated (firstId,1,2,2,2);
+		testLog.storeUpdate(testUpdated);
+		Score score  = testLog.callScore(firstId);
+		Assert.assertEquals(1,score.getId());
+		Assert.assertEquals("30-30", score.getScore());
+		Assert.assertEquals(1, score.getPlayer1());
+		Assert.assertEquals(2, score.getPlayer2());
+	}
+	
+	@Test
+	public void CallScore4030Test(){
+		InMemoryPersistence testLog = new InMemoryPersistence();
+		int firstId = testLog.lookupNextGameId();
+		GameUpdated testUpdated = new GameUpdated (firstId,1,2,3,2);
+		testLog.storeUpdate(testUpdated);
+		Score score  = testLog.callScore(firstId);
+		Assert.assertEquals(1,score.getId());
+		Assert.assertEquals("40-30", score.getScore());
+		Assert.assertEquals(1, score.getPlayer1());
+		Assert.assertEquals(2, score.getPlayer2());
+	}
+	
+	@Test
+	public void CallScore4040AsDEUCETest(){
+		InMemoryPersistence testLog = new InMemoryPersistence();
+		int firstId = testLog.lookupNextGameId();
+		GameUpdated testUpdated = new GameUpdated (firstId,1,2,3,3);
+		testLog.storeUpdate(testUpdated);
+		Score score  = testLog.callScore(firstId);
+		Assert.assertEquals(1,score.getId());
+		Assert.assertEquals("DEUCE!", score.getScore());
+		Assert.assertEquals(1, score.getPlayer1());
+		Assert.assertEquals(2, score.getPlayer2());
+	}
+
+	@Test
+	public void CallScoreForGameWonTest(){
+		InMemoryPersistence testLog = new InMemoryPersistence();
+		int firstId = testLog.lookupNextGameId();
+		PlayerAdded player1 = new PlayerAdded(1,"Serena Williams");
+		testLog.storePlayerAdded(player1);
+		GameUpdated testUpdated = new GameUpdated (firstId,1,2,4,2,true,false,1);
+		testLog.storeUpdate(testUpdated);
+		Score score  = testLog.callScore(firstId);
+		Assert.assertEquals(1,score.getId());
+		Assert.assertEquals("Winner, Serena Williams", score.getScore());
+		Assert.assertEquals(1, score.getPlayer1());
+		Assert.assertEquals(2, score.getPlayer2());
+	}
+	
+	@Test
+	public void CallScoreForGameAdvantageTest(){
+		InMemoryPersistence testLog = new InMemoryPersistence();
+		int firstId = testLog.lookupNextGameId();
+		PlayerAdded player1 = new PlayerAdded(1,"Serena Williams");
+		testLog.storePlayerAdded(player1);
+		GameUpdated testUpdated = new GameUpdated (firstId,1,2,4,3,false,true,1);
+		testLog.storeUpdate(testUpdated);
+		Score score  = testLog.callScore(firstId);
+		Assert.assertEquals(1,score.getId());
+		Assert.assertEquals("Advantage, Serena Williams", score.getScore());
+		Assert.assertEquals(1, score.getPlayer1());
+		Assert.assertEquals(2, score.getPlayer2());
+	}
+	
+	
+		
 }
