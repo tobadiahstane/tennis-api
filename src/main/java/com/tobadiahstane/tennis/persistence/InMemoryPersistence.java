@@ -76,6 +76,24 @@ public class InMemoryPersistence implements IPersistGames, IQueryGames, IPersist
 	public int lookupNextGameId() {
 		return this.games.size() + 1;
 	}
+	
+	@Override
+	public boolean alreadyPlaying(int playerId) {
+		//TODO implement
+		return false;
+	}
+	
+	@Override
+	public boolean gameOver(int gameId) {
+		//TODO implement tests
+		return false;
+	}
+	
+	@Override
+	public boolean isGame(int gameId) {
+		//TODO implement tests
+		return false;
+	}
 
 	@Override
 	public int lookupNextPlayerId() {

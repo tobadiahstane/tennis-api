@@ -5,12 +5,23 @@ import org.junit.Assert;
 
 import com.tobadiahstane.tennis.game.GameService;
 import com.tobadiahstane.tennis.game.Games;
+import com.tobadiahstane.tennis.util.TennisCommandRejected;
 
 
 public class GameServiceTest {
 	
+	@Test (expected = TennisCommandRejected.class)
+	public void gameServiceCatchesIPersistGamesExceptionsStartGameTest(){
+		int p1 = 1, p2 = 2;
+		ExceptionTestDouble testLog = new ExceptionTestDouble();
+		GameEngine engine = new GameEngine();
+		Games testGames = new GameService(engine, testLog, testLog);
+		int gameId = testGames.startGame(p1,p2);
+		
+	}
+	
 	@Test
-	public void startGameLooksUpNextGameIdFromPersistenceOneTest() {
+	public void startGameLooksUpNextGameIdFromPersistenceOneTest() throws Exception {
 		int p1 = 1, p2 = 2;
 		PersistenceTestDouble testLog = new PersistenceTestDouble();
 		int initNextId = testLog.lookupNextGameId();
@@ -23,7 +34,7 @@ public class GameServiceTest {
 	}
 
 	@Test
-	public void startGameLooksUpNextGameIdFromPersistenceTwoTest() {
+	public void startGameLooksUpNextGameIdFromPersistenceTwoTest() throws Exception {
 		int p1 = 1, p2 = 2, p3 = 3, p4 = 4;
 		PersistenceTestDouble testLog = new PersistenceTestDouble();
 		int initNextId = testLog.lookupNextGameId();
@@ -36,7 +47,7 @@ public class GameServiceTest {
 	}
 	
 	@Test
-	public void startGameReturnsGameIdTest() {
+	public void startGameReturnsGameIdTest() throws Exception {
 	int p1 = 1, p2 = 2;
 	PersistenceTestDouble testLog = new PersistenceTestDouble();
 	Games testGames = makeTestGameService(testLog);
@@ -46,7 +57,7 @@ public class GameServiceTest {
 	}
 	
 	@Test
-	public void startGameReturnsGameUpdateWithPlayerIdsOneAndTwoTest() {
+	public void startGameReturnsGameUpdateWithPlayerIdsOneAndTwoTest() throws Exception {
 		int p1 = 1, p2 = 2;
 		var gameOneFirstUpdate = returnStartGameUpdate(p1,p2);
 		Assert.assertEquals(p1, gameOneFirstUpdate.playerOneId);
@@ -54,7 +65,7 @@ public class GameServiceTest {
 	}
 	
 	@Test
-	public void startGameReturnsGameUpdateWithPlayerIdsThreeAndFourTest() {
+	public void startGameReturnsGameUpdateWithPlayerIdsThreeAndFourTest() throws Exception {
 		int p1 = 3, p2 = 4;
 		var gameOneFirstUpdate = returnStartGameUpdate(p1,p2);
 		Assert.assertEquals(p1, gameOneFirstUpdate.playerOneId);
@@ -62,15 +73,70 @@ public class GameServiceTest {
 	}
 	
 	@Test
-	public void startGameReturnsGameUpdateWithPlayerScorestheSameTest() {
+	public void startGameReturnsGameUpdateWithPlayerScorestheSameTest() throws Exception {
 		int p1 = 1, p2 = 2;
 		var gameOneFirstUpdate = returnStartGameUpdate(p1,p2);
 		Assert.assertEquals(gameOneFirstUpdate.playerOnePoints, gameOneFirstUpdate.playerTwoPoints);
 	}
 
+	@Test (expected = TennisCommandRejected.class)
+	public void startGameRejectsGameIfFirstPlayerPlayer1AlreadyPlaying() throws Exception{
+		int p1 = 1, p2 = 2, p3 = 3;
+		PersistenceTestDouble testLog = new PersistenceTestDouble();
+		Games testGames = makeTestGameService(testLog);
+		testGames.startGame(p1,p2);
+		testGames.startGame(p1,p3);
+		
+	}
+	@Test (expected = TennisCommandRejected.class)
+	public void startGameRejectsGameIfFirstPlayerPlayer2AlreadyPlaying() throws Exception{
+		int p1 = 1, p2 = 2, p3 = 3;
+		PersistenceTestDouble testLog = new PersistenceTestDouble();
+		Games testGames = makeTestGameService(testLog);
+		testGames.startGame(p1,p2);
+		testGames.startGame(p2,p3);
+		
+	}
+	@Test (expected = TennisCommandRejected.class)
+	public void startGameRejectsGameIfSecondPlayerPlayer1AlreadyPlaying() throws Exception{
+		int p1 = 1, p2 = 2, p3 = 3;
+		PersistenceTestDouble testLog = new PersistenceTestDouble();
+		Games testGames = makeTestGameService(testLog);
+		testGames.startGame(p1,p2);
+		testGames.startGame(p3,p1);	
+	}	
+	
+	@Test (expected = TennisCommandRejected.class)
+	public void startGameRejectsGameIfSecondPlayerPlayer2AlreadyPlaying() throws Exception{
+		int p1 = 1, p2 = 2, p3 = 3;
+		PersistenceTestDouble testLog = new PersistenceTestDouble();
+		Games testGames = makeTestGameService(testLog);
+		testGames.startGame(p1,p2);
+		testGames.startGame(p3,p2);	
+	}	
+	
+	@Test (expected = TennisCommandRejected.class)
+	public void nextScoreCatchesIPersistGamesExceptionsTest() {
+		int p1 = 1;
+		ExceptionTestDouble testLog = new ExceptionTestDouble();
+		GameEngine engine = new GameEngine();
+		Games testGames = new GameService(engine, testLog, testLog);
+		testGames.nextScore(1,p1);
+		
+	}
+	
+	@Test (expected = TennisCommandRejected.class)
+	public void callScoreCatchesIPersistGamesExceptionsTest() {
+		ExceptionTestDouble testLog = new ExceptionTestDouble();
+		GameEngine engine = new GameEngine();
+		Games testGames = new GameService(engine, testLog, testLog);
+		testGames.callScore(1);
+		
+	}
+	
 	
 	@Test
-	public void nextScoreAwardsPointsUsingTestGameEngineTest() {
+	public void nextScoreAwardsPointsUsingTestGameEngineTest() throws Exception {
 		int p1 = 1, p2 = 2;
 		PersistenceTestDouble testLog = new PersistenceTestDouble();
 		Games gameService = makeTestGameService(testLog);
@@ -83,7 +149,7 @@ public class GameServiceTest {
 	}
 
 	@Test
-	public void nextScoreStoresGameUpdated() {
+	public void nextScoreStoresGameUpdated() throws Exception {
 		int p1 = 1, p2 = 2;
 		PersistenceTestDouble testLog = new PersistenceTestDouble();
 		Games gameService = makeTestGameService(testLog);
@@ -94,11 +160,29 @@ public class GameServiceTest {
 		Assert.assertNotEquals(nextUpdate.playerTwoPoints, nextUpdate.playerOnePoints);
 	}
 	
-	private GameUpdated returnStartGameUpdate(int p1, int p2) {
+	@Test (expected = TennisCommandRejected.class)
+	public void nextScoreThrowsExceptionIfGameOverTest(){
 		PersistenceTestDouble testLog = new PersistenceTestDouble();
 		Games gameService = makeTestGameService(testLog);
-		gameService.startGame(p1,p2);
-		return testLog.lastStored();
+		int p1 = 1, p2 = 2, gameId = 1;
+		testLog.lastStored = new GameUpdated(gameId,p1,p2,4,0,true,false,1);
+		gameService.nextScore(gameId, p1);
+	}
+	
+	@Test (expected = TennisCommandRejected.class)
+	public void nextScoreThrowsExceptionIfGameNotExistTest(){
+		PersistenceTestDouble testLog = new PersistenceTestDouble();
+		Games gameService = makeTestGameService(testLog);
+		int p1 = 1, gameId = 1;
+		gameService.nextScore(gameId, p1);
+	}
+	
+	
+	private GameUpdated returnStartGameUpdate(int p1, int p2) throws Exception {
+		PersistenceTestDouble testLog = new PersistenceTestDouble();
+		Games gameService = makeTestGameService(testLog);
+		int gameId= gameService.startGame(p1,p2);
+		return testLog.loadGame(gameId);
 		
 	}
 
@@ -140,6 +224,7 @@ public class GameServiceTest {
 
 		PersistenceTestDouble(){
 			nextGameId = 1;
+			lastStored = new GameUpdated(0,0,0,0,0);
 
 		}
 		
@@ -154,6 +239,21 @@ public class GameServiceTest {
 		}
 		
 		@Override
+		public boolean alreadyPlaying (int playerId){
+			return playerId == lastStored.playerOneId || playerId == lastStored.playerTwoId;
+		}
+		
+		@Override
+		public boolean gameOver(int gameId) {
+			return false == lastStored.playerWon;
+		}
+		
+		@Override
+		public boolean isGame(int gameId) {
+			return gameId == lastStored.gameId;
+		}
+		
+		@Override
 		public void storeUpdate(GameUpdated update) {
 		this.lastStored = update;
 		nextGameId = update.gameId + 1;
@@ -164,13 +264,48 @@ public class GameServiceTest {
 		public GameUpdated loadGame(int gameId) {
 			return lastStored;
 		}
-	
-		public GameUpdated lastStored() {
-			return lastStored;
-		}
 		
    }
 	
+	private class ExceptionTestDouble  implements Games.IQueryGames, Games.IPersistGames{
+
+		@Override
+		public void storeUpdate(GameUpdated update) {
+			throw new IllegalArgumentException();
+			
+		}
+
+		@Override
+		public GameUpdated loadGame(int gameId) {
+			throw new IllegalArgumentException();
+		}
+
+		@Override
+		public Score callScore(int gameId) {
+			throw new IllegalArgumentException();
+		}
+
+		@Override
+		public int lookupNextGameId() {
+			throw new IllegalArgumentException();
+		}
+
+		@Override
+		public boolean alreadyPlaying(int playerId) {
+			throw new IllegalArgumentException();
+		}
+
+		@Override
+		public boolean gameOver(int gameId) {
+			throw new IllegalArgumentException();
+		}
+
+		@Override
+		public boolean isGame(int gameId) {
+			throw new IllegalArgumentException();
+		}
+		
+	}
 }
 	
 

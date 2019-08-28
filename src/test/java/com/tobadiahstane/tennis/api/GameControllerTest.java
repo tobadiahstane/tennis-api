@@ -46,7 +46,6 @@ public class GameControllerTest {
 
 		@Override
 		public int startGame(int p1, int p2) {
-			// TODO Auto-generated method stub
 			this.score = new Score(1, "Love-Love", p1, p2);
 			return score.getId();
 			
@@ -54,7 +53,6 @@ public class GameControllerTest {
 
 		@Override
 		public Score callScore(int gameId) {
-			// TODO Auto-generated method stub
 			return this.score;
 		}
 

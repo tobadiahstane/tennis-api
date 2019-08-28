@@ -12,15 +12,24 @@ public class GameController {
 	}
 
 	public Score game(int player1, int player2) {
-		int gameId = this.games.startGame(player1, player2);
-		return games.callScore(gameId);
+		try {
+			int gameId = this.games.startGame(player1, player2);
+			return games.callScore(gameId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	
 	}
 
 	public Score score(int gameId, int playerId) {
-		games.nextScore(gameId, playerId);
-		return games.callScore(gameId);
-		
+		try {
+		    games.nextScore(gameId, playerId);
+		    return games.callScore(gameId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 }

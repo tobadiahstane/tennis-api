@@ -1,12 +1,13 @@
 package com.tobadiahstane.tennis.game;
 
+import com.tobadiahstane.tennis.util.TennisCommandRejected;
+
 public interface Games {
 
-	//int addPlayer(String playerName);
+
+	int startGame(int p1, int p2) throws TennisCommandRejected;
 	
-	int startGame(int p1, int p2);
-	
-	void nextScore(int gameId, int p1);
+	void nextScore(int gameId, int p1) throws TennisCommandRejected;
 
 	Score callScore(int gameId);
 
@@ -22,8 +23,12 @@ public interface Games {
 		public Score callScore(int gameId);
 
 		public int lookupNextGameId();
+
+		boolean alreadyPlaying(int playerId);
+
+		boolean gameOver(int gameId);
 		
-		//TODO: public boolean isGame(int gameId);
+		boolean isGame(int gameId);
 		
 	}
 	
